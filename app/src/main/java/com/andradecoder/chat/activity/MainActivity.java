@@ -1,4 +1,4 @@
-package com.andradecoder.chat;
+package com.andradecoder.chat.activity;
 
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.PagerAdapter;
@@ -6,6 +6,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import com.andradecoder.chat.R;
 import com.andradecoder.chat.adapter.TabsPageAdapter;
 
 //Trabalho desenvolvido por @AndradeCoder na disciplina de Programação para dispositivos móveis

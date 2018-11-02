@@ -1,4 +1,4 @@
-package com.andradecoder.chat;
+package com.andradecoder.chat.modelo;
 
 import java.util.Objects;
 

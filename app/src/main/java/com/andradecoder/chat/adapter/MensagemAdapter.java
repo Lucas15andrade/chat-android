@@ -7,9 +7,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.andradecoder.chat.Mensagem;
+import com.andradecoder.chat.modelo.Mensagem;
 import com.andradecoder.chat.R;
-import com.andradecoder.chat.ViewHolder.MensagemHolder;
+import com.andradecoder.chat.holder.MensagemHolder;
 
 import java.util.List;
 

@@ -5,15 +5,15 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.andradecoder.chat.MapaFragment;
+import com.andradecoder.chat.fragment.MapaFragment;
 import com.andradecoder.chat.fragment.CameraFragment;
 import com.andradecoder.chat.fragment.ChatFragment;
 
 public class TabsPageAdapter extends FragmentPagerAdapter {
-
+    /*
     int x = 1;
     boolean primeiraVez = true;
-
+    */
     public TabsPageAdapter(FragmentManager fm) {
         super(fm);
     }
@@ -29,10 +29,8 @@ public class TabsPageAdapter extends FragmentPagerAdapter {
         switch (i){
             case 0:
                 return new CameraFragment();
-
             case 1:
                 return new ChatFragment();
-
             case 2:
                 return new MapaFragment();
                 default:
@@ -54,10 +52,8 @@ public class TabsPageAdapter extends FragmentPagerAdapter {
         switch (position){
             case 0:
                 return "";
-
             case 1:
                 return "Chat";
-
             case 2:
                 return "Mapa";
             default:

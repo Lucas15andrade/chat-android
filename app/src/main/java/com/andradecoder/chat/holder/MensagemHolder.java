@@ -1,4 +1,4 @@
-package com.andradecoder.chat.ViewHolder;
+package com.andradecoder.chat.holder;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
