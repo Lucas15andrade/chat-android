@@ -32,4 +32,12 @@ dependencies {
 
     //RecylerView
     implementation 'com.android.support:recyclerview-v7:28.0.0-alpha1'
+
+    //Dependência do Firebase
+    //implementation 'com.google.firebase:firebase-core:16.0.1'
+
+    //Dependência do Real Time Database do Firebase
+    //Serviço de bandco de dados em tempo real
+    implementation 'com.google.firebase:firebase-database:16.0.3'
 }
+apply plugin: 'com.google.gms.google-services'
