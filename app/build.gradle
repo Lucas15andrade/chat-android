@@ -39,5 +39,11 @@ dependencies {
     //Dependência do Real Time Database do Firebase
     //Serviço de bandco de dados em tempo real
     implementation 'com.google.firebase:firebase-database:16.0.3'
+
+    //Dependência da autenticação: Firebase UI
+    implementation 'com.firebaseui:firebase-ui-auth:4.2.1'
+
+    //Dependência do facebook
+    implementation 'com.facebook.android:facebook-login:4.38.1'
 }
 apply plugin: 'com.google.gms.google-services'

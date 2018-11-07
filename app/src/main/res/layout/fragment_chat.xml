@@ -1,49 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/scrollView"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fillViewport="true">
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragment.ChatFragment">
+    android:orientation="vertical"
+    tools:context=".fragment.ChatFragment"
+    tools:layout_editor_absoluteY="81dp">
 
     <!-- TODO: Update blank fragment layout -->
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerMensagem"
-        android:layout_width="match_parent"
-        android:layout_height="524dp" />
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <EditText
-        android:id="@+id/editMensagem"
-        android:layout_width="248dp"
-        android:layout_height="54dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginBottom="36dp"
-        android:ems="10"
-        android:hint="Mensagem"
-        android:inputType="textPersonName"
-        android:textColor="@android:color/white"
-        android:textColorHint="@color/corCinza"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+    </android.support.v7.widget.RecyclerView>
 
-    <ImageButton
-        android:id="@+id/imageButton"
-        android:layout_width="45dp"
-        android:layout_height="42dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginBottom="36dp"
-        android:background="@android:color/transparent"
-        android:scaleType="fitStart"
-        android:src="@drawable/send_button"
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:layout_marginBottom="1dp"
+        android:background="@color/colorPrimaryDark"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/editMensagem" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recyclerMensagem">>
+
+        <EditText
+            android:id="@+id/editMensagem"
+            android:layout_width="248dp"
+            android:layout_height="54dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginBottom="4dp"
+            android:ems="10"
+            android:hint="Mensagem"
+            android:inputType="textPersonName"
+            android:textColor="@android:color/white"
+            android:textColorHint="@color/corCinza"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageButton
+            android:id="@+id/imageButton"
+            android:layout_width="38dp"
+            android:layout_height="35dp"
+            android:layout_marginStart="56dp"
+            android:layout_marginBottom="12dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="TODO"
+            android:scaleType="fitStart"
+            android:src="@drawable/send_button"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/editMensagem" />
+    </LinearLayout>
+
 </android.support.constraint.ConstraintLayout>
-</ScrollView>
