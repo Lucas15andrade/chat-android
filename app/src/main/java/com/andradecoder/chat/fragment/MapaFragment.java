@@ -52,19 +52,20 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback{
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_mapa, container, false);
-        /*
-        mapView = view.findViewById(R.id.mapView);
 
-        if(mapView != null){
-            mapView.onCreate(null);
-            mapView.onResume();
-            mapView.getMapAsync(this);
-        }
-        */
+
+//        mapView = view.findViewById(R.id.mapView);
+//
+//        if(mapView != null){
+//            mapView.onCreate(null);
+//            mapView.onResume();
+//            mapView.getMapAsync(this);
+//        }
+
 
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapView);
-
         mapFragment.getMapAsync(this);
+
 
 
         return view;
@@ -74,12 +75,12 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback{
     @Override
     public void onMapReady(GoogleMap googleMap) {
         MapsInitializer.initialize(getContext());
-        /*
+
         gMap = googleMap;
 
         gMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
-        CameraPosition liberty = CameraPosition.builder().target(new LatLng(LATITUDE, LONGITUDE)).zoom(18).bearing(0).build();
+//        CameraPosition liberty = CameraPosition.builder().target(new LatLng(LATITUDE, LONGITUDE)).zoom(18).bearing(0).build();
 
 //        gMap.moveCamera(CameraUpdateFactory.newCameraPosition(liberty));
 //        gMap.addMarker(new MarkerOptions().position(new LatLng(LATITUDE, LONGITUDE)).title("Título do mapa"));
@@ -91,14 +92,22 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback{
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     REQUEST_FINE_LOCATION);
         }
-        */
 
-        gMap = googleMap;
+
+        //gMap = googleMap;
 
         // Add a marker in Sydney, Australia, and move the camera.
-        LatLng sydney = new LatLng(-34, 151);
-        gMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        gMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+//        LatLng sydney = new LatLng(-34, 151);
+//        gMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+//        gMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+
+//        if(ContextCompat.checkSelfPermission(getContext(), permissoes[0]) == PackageManager.PERMISSION_GRANTED){
+//            gMap.setMyLocationEnabled(true);
+//        }else{
+//            ActivityCompat.requestPermissions(getActivity(),
+//                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+//                    REQUEST_FINE_LOCATION);
+//        }
 
 
     }

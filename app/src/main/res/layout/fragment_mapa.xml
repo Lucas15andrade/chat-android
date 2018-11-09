@@ -1,7 +1,24 @@
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/mapView"
-    tools:context=".fragment.MapaFragment"
-    android:name="com.google.android.gms.maps.SupportMapFragment" />
+    android:orientation="vertical"
+    tools:context=".fragment.MapaFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <fragment
+        android:id="@+id/mapView"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="408dp"
+        tools:context=".fragment.MapaFragment" />
+
+
+    <Button
+        android:id="@+id/buttonEnviarLocalizacao"
+        android:layout_width="match_parent"
+        android:layout_height="236dp"
+        android:text="Enviar localização" />
+</LinearLayout>
