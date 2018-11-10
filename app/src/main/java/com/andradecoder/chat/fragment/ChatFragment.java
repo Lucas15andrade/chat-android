@@ -29,8 +29,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import static android.app.Activity.RESULT_CANCELED;
@@ -55,6 +58,8 @@ public class ChatFragment extends Fragment {
     private ChildEventListener childEventListener;
 
     private String autor;
+    String data;
+    Date date;
 
     RecyclerView recylerMensagens;
 
@@ -72,6 +77,10 @@ public class ChatFragment extends Fragment {
         //Instanciando objetos do fragment após a view ser inflada.
         botaoEnviar = view.findViewById(R.id.imageButton);
         conteudo = view.findViewById(R.id.editMensagem);
+
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        date = new Date();
+        data = dateFormat.format(date);
 
         //Instanciando objetos do Firebase
         mFirebase = FirebaseDatabase.getInstance();
@@ -128,7 +137,7 @@ public class ChatFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Log.i("TESTE", "Clicou no botão de enviar");
-                Mensagem mensagem = new Mensagem(conteudo.getText().toString(), autor, "02/11/2018 - 06:11");
+                Mensagem mensagem = new Mensagem(conteudo.getText().toString(), autor, data);
                 mReference.push().setValue(mensagem);
                 conteudo.setText("");
             }

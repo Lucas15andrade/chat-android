@@ -47,7 +47,10 @@ dependencies {
     //Dependência do facebook
     implementation 'com.facebook.android:facebook-login:4.38.1'
 
-    //GoogleMaps
+    //GoogleMaps - PlayServices
     implementation 'com.google.android.gms:play-services-maps:16.0.0'
+
+    //Dependência do LOCATION API para obter a última localização do celular
+    implementation 'com.google.android.gms:play-services-location:16.0.0'
 }
 apply plugin: 'com.google.gms.google-services'
