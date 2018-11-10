@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -103,7 +104,7 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
         Button buttoEnviarLocalizacao = view.findViewById(R.id.buttonEnviarLocalizacao);
         buttoEnviarLocalizacao.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(final View v) {
                 Log.i("TESTE", "Clicou no botão de enviar localização");
 
                 mFirebase = FirebaseDatabase.getInstance();
@@ -125,6 +126,11 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
                                 Mensagem mensagem = new Mensagem(linkMaps, user.getDisplayName(), data);
 
                                 mReference.push().setValue(mensagem);
+                                /*
+                                ((FragmentActivity) v.getContext()).getSupportFragmentManager().beginTransaction()
+                                        .replace(R.id.fragment_container, fragment)
+                                        .commit();
+                                        */
                             }
                         }
                     });
