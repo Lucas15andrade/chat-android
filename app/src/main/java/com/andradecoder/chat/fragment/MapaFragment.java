@@ -123,7 +123,7 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
 
                                 FirebaseUser user = mFirebaseAuth.getCurrentUser();
 
-                                Mensagem mensagem = new Mensagem(linkMaps, user.getDisplayName(), data);
+                                Mensagem mensagem = new Mensagem(linkMaps,null, user.getDisplayName(), data);
 
                                 mReference.push().setValue(mensagem);
                                 /*
@@ -170,23 +170,6 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     REQUEST_FINE_LOCATION);
         }
-
-
-        //gMap = googleMap;
-
-        // Add a marker in Sydney, Australia, and move the camera.
-//        LatLng sydney = new LatLng(-34, 151);
-//        gMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-//        gMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-
-//        if(ContextCompat.checkSelfPermission(getContext(), permissoes[0]) == PackageManager.PERMISSION_GRANTED){
-//            gMap.setMyLocationEnabled(true);
-//        }else{
-//            ActivityCompat.requestPermissions(getActivity(),
-//                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-//                    REQUEST_FINE_LOCATION);
-//        }
-
 
     }
 

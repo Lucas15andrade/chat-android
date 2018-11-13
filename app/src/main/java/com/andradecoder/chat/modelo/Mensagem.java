@@ -4,16 +4,18 @@ import java.util.Objects;
 
 public class Mensagem {
     private String conteudo;
+    private String urlFoto;
     private String nome;
     private String data;
 
-    public Mensagem(String conteudo, String nome, String data) {
-        this.conteudo = conteudo;
-        this.nome = nome;
-        this.data = data;
+    public Mensagem() {
     }
 
-    public Mensagem() {
+    public Mensagem(String conteudo, String urlFoto, String nome, String data) {
+        this.conteudo = conteudo;
+        this.urlFoto = urlFoto;
+        this.nome = nome;
+        this.data = data;
     }
 
     public String getConteudo() {
@@ -22,6 +24,14 @@ public class Mensagem {
 
     public void setConteudo(String conteudo) {
         this.conteudo = conteudo;
+    }
+
+    public String getUrlFoto() {
+        return urlFoto;
+    }
+
+    public void setUrlFoto(String urlFoto) {
+        this.urlFoto = urlFoto;
     }
 
     public String getNome() {
@@ -46,6 +56,7 @@ public class Mensagem {
         if (o == null || getClass() != o.getClass()) return false;
         Mensagem mensagem = (Mensagem) o;
         return Objects.equals(conteudo, mensagem.conteudo) &&
+                Objects.equals(urlFoto, mensagem.urlFoto) &&
                 Objects.equals(nome, mensagem.nome) &&
                 Objects.equals(data, mensagem.data);
     }
@@ -53,6 +64,6 @@ public class Mensagem {
     @Override
     public int hashCode() {
 
-        return Objects.hash(conteudo, nome, data);
+        return Objects.hash(conteudo, urlFoto, nome, data);
     }
 }

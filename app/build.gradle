@@ -52,5 +52,11 @@ dependencies {
 
     //Dependência do LOCATION API para obter a última localização do celular
     implementation 'com.google.android.gms:play-services-location:16.0.0'
+
+    //Dependência do Firebase Storage
+    implementation 'com.google.firebase:firebase-storage:16.0.3'
+
+    //Biblioteca do GLIDE para carregar imagens
+    implementation 'com.github.bumptech.glide:glide:4.8.0'
 }
 apply plugin: 'com.google.gms.google-services'

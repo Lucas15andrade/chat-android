@@ -137,7 +137,7 @@ public class ChatFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Log.i("TESTE", "Clicou no botão de enviar");
-                Mensagem mensagem = new Mensagem(conteudo.getText().toString(), autor, data);
+                Mensagem mensagem = new Mensagem(conteudo.getText().toString(), null, autor, data);
                 mReference.push().setValue(mensagem);
                 conteudo.setText("");
             }
