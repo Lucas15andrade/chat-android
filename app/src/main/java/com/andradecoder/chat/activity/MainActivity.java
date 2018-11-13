@@ -50,9 +50,13 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseReference mReference;
     private FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
-    static final int REQUEST_IMAGE_CAPTURE = 1;
-    static final int REQUEST_TAKE_PHOTO = 1;
+    static final int REQUEST_TAKE_PHOTO = 10;
     private static final int PERMISSAO = 5;
+
+    File arquivoFoto = null;
+
+    private String caminhoImagem;
+    private static final String NOMEFOTO = "foto_externa.jpg";
 
     File fotoTeste = null;
 
@@ -170,9 +174,8 @@ public class MainActivity extends AppCompatActivity {
 
         Intent capturarFoto = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
+        //Verificando se existe uma atividade de câmera para lidar com a INTENT
         if (capturarFoto.resolveActivity(getPackageManager()) != null) {
-
-            File arquivoFoto = null;
 
             try {
                 arquivoFoto = criarArquivoFoto();
@@ -184,6 +187,7 @@ public class MainActivity extends AppCompatActivity {
                 Uri photoURI = FileProvider.getUriForFile(this,
                         getApplicationContext().getPackageName() + ".provider",
                         arquivoFoto);
+                Log.i("FOTO","Salvando foto");
                 capturarFoto.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 startActivityForResult(capturarFoto, REQUEST_TAKE_PHOTO);
                 //StartActivity caso seja um thubmnail
@@ -194,23 +198,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private File criarArquivoFoto() throws IOException {
-        String dataFoto = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date());
-        String arquivoImagemNome = "JPGE_" + dataFoto + "_";
 
-        File arquivo = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-        //File pasta = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-        /*File imagem = File.createTempFile(
-          arquivoImagemNome,
-          ".jpg",
-          arquivo
-        );*/
+        //String dataFoto = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date());
 
-        File imagem = new File(arquivo.getPath() + File.separator
-                + "JPG_" + dataFoto + ".jpg");
+        File diretorioArmazenamento = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), "Camera");
 
+        caminhoImagem = diretorioArmazenamento.getAbsolutePath() + "/" + NOMEFOTO;
 
-        fotoAtual = imagem.getAbsolutePath();
-        fotoTeste = imagem;
+        File imagem = new File(caminhoImagem);
+
 
         return imagem;
     }
@@ -218,49 +214,34 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
-            if (data != null) {
-                /*
-                Bundle extras = data.getExtras();
-                Bitmap imagem = (Bitmap) extras.get("dataMensagem");
-                Log.i("TESTE", "Entrou no result");
-                */
-                //Recebo a imagem. Tratá-la
 
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                final String nomeUsuario = user.getDisplayName();
+        if(requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK){
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            final String nomeUsuario = user.getDisplayName();
 
-                //final Uri imagemSelecionada = data.getData();
-                //Log.i("TESTE", imagemSelecionada.toString());
+            Uri imagemSelecionada = Uri.fromFile(arquivoFoto);
 
-                File f = new File(fotoAtual);
-                final Uri imagemSelecionada = Uri.fromFile(fotoTeste);
-                Log.i("FOTO", "uri 1: "+imagemSelecionada.toString());
-                StorageReference referenciaFoto = storageReference.child(nomeUsuario + "_" + dataMensagem);
-                Log.i("FOTO","uri 2: "+imagemSelecionada.toString());
-                Log.i("FOTO","Storage Reference: "+ referenciaFoto.toString());
+            StorageReference referenciaFoto = storageReference.child(nomeUsuario + "_" + dataMensagem);
 
-                referenciaFoto.putFile(imagemSelecionada).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            referenciaFoto.putFile(imagemSelecionada).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
 
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
-                        Log.i("FOTO","Caiu no primeiro sucesso");
+                    Log.i("FOTO","Caiu no primeiro sucesso");
 
-                        taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                            @Override
-                            public void onSuccess(Uri uri) {
-                                Mensagem mensagem = new Mensagem(null, uri.toString(), nomeUsuario, dataMensagem);
-                                mReference.push().setValue(mensagem);
-                                Log.i("FOTO", "Caiu no segundo sucesso");
-                            }
-                        });
-                    }
-                });
-
-            }
-
+                    taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            Mensagem mensagem = new Mensagem(null, uri.toString(), nomeUsuario, dataMensagem);
+                            mReference.push().setValue(mensagem);
+                            Log.i("FOTO", "Caiu no segundo sucesso");
+                        }
+                    });
+                }
+            });
         }
+
         tabLayout.getTabAt(1).select();
     }
 
