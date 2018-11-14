@@ -2,6 +2,7 @@ package com.andradecoder.chat.fragment;
 
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -9,6 +10,8 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +24,7 @@ import com.andradecoder.chat.modelo.Mensagem;
 import com.andradecoder.chat.R;
 import com.andradecoder.chat.adapter.MensagemAdapter;
 import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -28,7 +32,12 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -52,16 +61,21 @@ public class ChatFragment extends Fragment {
     //Objetos do banco de dados e Firebase
     private FirebaseDatabase mFirebase;
     private DatabaseReference mReference;
+    private FirebaseStorage mStorage;
+    private StorageReference databaseReference;
     private FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     //Listenner que ficará ouvindo todos os filhos
     private ChildEventListener childEventListener;
 
     private String autor;
-    String data;
+    String dataMensagem;
     Date date;
 
     RecyclerView recylerMensagens;
+
+    private static final int SELECIONARIMAGEM = 10;
+    InputStream input;
 
     public ChatFragment() {
         // Required empty public constructor
@@ -76,15 +90,18 @@ public class ChatFragment extends Fragment {
 
         //Instanciando objetos do fragment após a view ser inflada.
         botaoEnviar = view.findViewById(R.id.imageButton);
+        final ImageButton buttonImagem = view.findViewById(R.id.buttonImagem);
         conteudo = view.findViewById(R.id.editMensagem);
 
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         date = new Date();
-        data = dateFormat.format(date);
+        dataMensagem = dateFormat.format(date);
 
         //Instanciando objetos do Firebase
         mFirebase = FirebaseDatabase.getInstance();
         mReference = mFirebase.getReference().child("mensagens");
+        mStorage = FirebaseStorage.getInstance();
+        databaseReference = mStorage.getReference().child("chat-fotos");
         mFirebaseAuth = FirebaseAuth.getInstance();
 
         recylerMensagens = view.findViewById(R.id.recyclerMensagem);
@@ -133,13 +150,44 @@ public class ChatFragment extends Fragment {
         recylerMensagens.setAdapter(mensagemAdapter);
         */
 
+        conteudo.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.toString().trim().length() > 0) {
+                    buttonImagem.setVisibility(View.INVISIBLE);
+                } else {
+                    buttonImagem.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
         botaoEnviar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.i("TESTE", "Clicou no botão de enviar");
-                Mensagem mensagem = new Mensagem(conteudo.getText().toString(), null, autor, data);
+                Mensagem mensagem = new Mensagem(conteudo.getText().toString(), null, autor, dataMensagem);
                 mReference.push().setValue(mensagem);
                 conteudo.setText("");
+            }
+        });
+
+        buttonImagem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("image/*");
+                startActivityForResult(intent, SELECIONARIMAGEM);
+
             }
         });
 
@@ -199,6 +247,39 @@ public class ChatFragment extends Fragment {
                 Toast.makeText(getContext(), "Logado com sucesso!", Toast.LENGTH_SHORT).show();
             } else if (requestCode == RESULT_CANCELED) {
 
+            }
+        } else if (requestCode == SELECIONARIMAGEM) {
+            if(resultCode == RESULT_OK){
+                try {
+                    input = getContext().getContentResolver().openInputStream(data.getData());
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+
+                if(input != null){
+                    Log.i("IMAGEM","Teste: "+input.toString());
+                    Log.i("IMAGEM", "TEste2: "+data.toString());
+                    //File arquivo = new File(dataMensagem.g);
+
+                     
+                    Uri uri = data.getData();
+
+                    StorageReference reference = databaseReference.child(autor + "_" + dataMensagem);
+
+                    reference.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    Mensagem mensagem = new Mensagem(null, uri.toString(), autor, dataMensagem);
+                                    mReference.push().setValue(mensagem);
+                                }
+                            });
+                        }
+                    });
+
+                }
             }
         }
 

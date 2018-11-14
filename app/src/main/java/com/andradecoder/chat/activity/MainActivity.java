@@ -3,7 +3,6 @@ package com.andradecoder.chat.activity;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -50,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseReference mReference;
     private FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
-    static final int REQUEST_TAKE_PHOTO = 10;
+    static final int CAMERA = 10;
     private static final int PERMISSAO = 5;
 
     File arquivoFoto = null;
@@ -79,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
         dataMensagem = dateFormat.format(date);
 
         Toolbar toolbar = findViewById(R.id.toolbarChat);
+        toolbar.setBackgroundColor(getResources().getColor(R.color.corBackground));
         setSupportActionBar(toolbar);
 
         ViewPager viewPager = findViewById(R.id.viewPager);
@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
         }*/
 
 
-        if (ContextCompat.checkSelfPermission(this,
+        if (ContextCompat.checkSelfPermission(getApplicationContext(),
                 Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
@@ -120,7 +120,6 @@ public class MainActivity extends AppCompatActivity {
                         PERMISSAO);
             }
         }
-
 
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -174,52 +173,54 @@ public class MainActivity extends AppCompatActivity {
 
         Intent capturarFoto = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-        //Verificando se existe uma atividade de câmera para lidar com a INTENT
         if (capturarFoto.resolveActivity(getPackageManager()) != null) {
-
             try {
                 arquivoFoto = criarArquivoFoto();
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
-            if (arquivoFoto != null) {
+            if(arquivoFoto != null){
                 Uri photoURI = FileProvider.getUriForFile(this,
                         getApplicationContext().getPackageName() + ".provider",
                         arquivoFoto);
-                Log.i("FOTO","Salvando foto");
+                Log.i("FOTO","Salvando foto: "+photoURI.toString());
                 capturarFoto.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                startActivityForResult(capturarFoto, REQUEST_TAKE_PHOTO);
-                //StartActivity caso seja um thubmnail
-                //startActivityForResult(capturarFoto,REQUEST_IMAGE_CAPTURE);
+                startActivityForResult(capturarFoto, CAMERA);
             }
 
         }
     }
 
-    private File criarArquivoFoto() throws IOException {
+    private File criarArquivoFoto() throws IOException{
 
-        //String dataFoto = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date());
+        File pasta = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
 
-        File diretorioArmazenamento = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), "Camera");
+        File imagem = new File(pasta.getAbsolutePath() + "/" + NOMEFOTO);
 
-        caminhoImagem = diretorioArmazenamento.getAbsolutePath() + "/" + NOMEFOTO;
-
-        File imagem = new File(caminhoImagem);
-
+//        File diretorioArmazenamento = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), "Camera");
+//
+//        caminhoImagem = diretorioArmazenamento.getAbsolutePath() + "/" + NOMEFOTO;
+//
+//        File imagem = new File(caminhoImagem);
 
         return imagem;
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable final Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode,
+                                    @Nullable final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK){
+        if (requestCode == CAMERA && resultCode == RESULT_OK) {
+            sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,Uri.fromFile(arquivoFoto)));
+
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             final String nomeUsuario = user.getDisplayName();
 
             Uri imagemSelecionada = Uri.fromFile(arquivoFoto);
+
+            Log.i("FOTO","URI: "+imagemSelecionada.toString());
 
             StorageReference referenciaFoto = storageReference.child(nomeUsuario + "_" + dataMensagem);
 
@@ -228,7 +229,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
-                    Log.i("FOTO","Caiu no primeiro sucesso");
+                    Log.i("FOTO", "Caiu no primeiro sucesso");
 
                     taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
@@ -242,6 +243,41 @@ public class MainActivity extends AppCompatActivity {
             });
         }
 
+        /*
+        if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            final String nomeUsuario = user.getDisplayName();
+
+            Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+            //File f = new File(arquivoFoto);
+            Uri contentUri = Uri.fromFile(arquivoFoto);
+            Log.i("FOTO","Resultado: "+ contentUri.toString());
+            mediaScanIntent.setData(contentUri);
+            this.sendBroadcast(mediaScanIntent);
+
+            Uri imagemSelecionada = Uri.fromFile(arquivoFoto);
+
+            StorageReference referenciaFoto = storageReference.child(nomeUsuario + "_" + dataMensagem);
+
+            referenciaFoto.putFile(imagemSelecionada).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                    Log.i("FOTO", "Caiu no primeiro sucesso");
+
+                    taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            Mensagem mensagem = new Mensagem(null, uri.toString(), nomeUsuario, dataMensagem);
+                            mReference.push().setValue(mensagem);
+                            Log.i("FOTO", "Caiu no segundo sucesso");
+                        }
+                    });
+                }
+            });
+        }
+        */
         tabLayout.getTabAt(1).select();
     }
 
