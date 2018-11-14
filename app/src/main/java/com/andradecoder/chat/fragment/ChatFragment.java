@@ -57,6 +57,7 @@ public class ChatFragment extends Fragment {
     private List<Mensagem> listaMensagens = new ArrayList<>();
     //Objetos da view
     private ImageButton botaoEnviar;
+    private ImageButton buttonImagem;
     private EditText conteudo;
     //Objetos do banco de dados e Firebase
     private FirebaseDatabase mFirebase;
@@ -90,7 +91,7 @@ public class ChatFragment extends Fragment {
 
         //Instanciando objetos do fragment após a view ser inflada.
         botaoEnviar = view.findViewById(R.id.imageButton);
-        final ImageButton buttonImagem = view.findViewById(R.id.buttonImagem);
+        buttonImagem = view.findViewById(R.id.buttonImagem);
         conteudo = view.findViewById(R.id.editMensagem);
 
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
@@ -131,7 +132,7 @@ public class ChatFragment extends Fragment {
                                                     new AuthUI.IdpConfig.EmailBuilder().build(),
                                                     new AuthUI.IdpConfig.FacebookBuilder().build()
                                             )
-                                    )
+                                    ).setLogo(R.drawable.icon_chat_android)
                                     .build(),
                             CODIGO_LOGAR);
                 }
@@ -261,7 +262,7 @@ public class ChatFragment extends Fragment {
                     Log.i("IMAGEM", "TEste2: "+data.toString());
                     //File arquivo = new File(dataMensagem.g);
 
-                     
+
                     Uri uri = data.getData();
 
                     StorageReference reference = databaseReference.child(autor + "_" + dataMensagem);

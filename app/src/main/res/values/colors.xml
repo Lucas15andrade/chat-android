@@ -6,4 +6,5 @@
     <color name="corBackground">#153955</color>
     <color name="corCinza">#C9C7C5</color>
     <color name="corToolbar">#1D454A</color>
+    <color name="corMenuTexto">#268699</color>
 </resources>
